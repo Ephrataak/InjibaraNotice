@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+  <include
+      android:id="@+id/addPostToolbar"
+      layout="@layout/toolbar"
+      />
+
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/text_subject_wrapper"
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      android:layout_width="330dp"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/addPostToolbar"
+      android:layout_marginLeft="20dp"
+      android:layout_marginTop="40dp">
+
+
+    <com.google.android.material.textfield.TextInputEditText
+
+        android:id="@+id/edit_text_subject"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:fontFamily="sans-serif-condensed-medium"
+        android:hint="Subject"
+        android:inputType="text"
+        android:maxLength="15"
+        android:textSize="24sp" />
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      android:id="@+id/text_message_wrapper"
+      android:layout_width="330dp"
+      android:layout_height="156dp"
+      android:layout_below="@id/text_subject_wrapper"
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="20dp"
+      android:layout_marginTop="28dp">
+
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edit_text_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:gravity="start|top"
+        android:hint="Message"
+        android:inputType="textMultiLine"
+        android:minLines="5"
+        android:singleLine="false"
+        android:textSize="20sp"
+        />
+
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <CheckBox
+      android:id="@+id/studentCheckBox"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Student"
+      android:layout_marginLeft="20dp"
+      android:layout_below="@id/text_message_wrapper"
+      android:textSize="18sp"
+      android:onClick="Check"/>
+  <CheckBox
+      android:id="@+id/staffmemberCheckBox"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Staff Member"
+      android:layout_marginLeft="20dp"
+      android:layout_below="@id/studentCheckBox"
+      android:textSize="18sp"
+      android:onClick="Check"/>
+  <CheckBox
+      android:id="@+id/publicCheckbox"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="20dp"
+      android:text="Public"
+      android:layout_below="@id/staffmemberCheckBox"
+      android:textSize="18sp"
+      android:onClick="Check"/>
+
+  <Button
+
+      android:layout_width="330dp"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/text_message_wrapper"
+
+      android:layout_marginLeft="20dp"
+      android:layout_marginTop="188dp"
+      android:background="#DF3A3A"
+      android:backgroundTint="#DF3A3A"
+      android:fontFamily="sans-serif-black"
+      android:onClick="saveNoticeAndSendNotification"
+      android:text="@string/add_post"
+      android:textColor="@color/white"
+      android:textSize="20sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.616"
+      app:rippleColor="#FFFFFF" />
+
+
+</RelativeLayout>
