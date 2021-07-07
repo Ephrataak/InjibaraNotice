@@ -1,7 +1,7 @@
 package com.example.notice;
 
 public  class Constants {
-    private static final String ROOT_URL = "http://192.168.1.3/NoticeApi/v1/Api.php?apicall=";
+    private static final String ROOT_URL = "https://injibara-notice-api.herokuapp.com/v1/Api.php?apicall=";
     public static final String create_post = ROOT_URL + "createpost";
     public static final String get_post = ROOT_URL + "getpost";
     public static final String update_post = ROOT_URL + "updatepost";

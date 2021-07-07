@@ -7,9 +7,9 @@
     android:layout_height="wrap_content"
     android:background="@color/red"
     android:elevation="4dp"
-    android:text="Add Post"
+
     android:theme="@style/ThemeOverlay.AppCompat.Light"
-    android:tooltipText="Add Post"
+
     android:maxLength= "15"
     app:titleTextColor="@color/white"
     >

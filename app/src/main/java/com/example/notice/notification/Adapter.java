@@ -56,8 +56,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ExampleViewHolder> {
 
         @Override
         public void onClick(View v) {
-            onItemClickListener.onItemClick(getAdapterPosition());
-            onItemClickListener.onEditButtonClick(getAdapterPosition());
+            if (v.getId() == R.id.edit_btn)
+                onItemClickListener.onEditButtonClick(getAdapterPosition());
+            else
+                onItemClickListener.onItemClick(getAdapterPosition());
+            //TODO else go to the delete button
         }
     }
 

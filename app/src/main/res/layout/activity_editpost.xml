@@ -10,8 +10,10 @@
     tools:context=".notification.editpost">
 
   <include
-      android:id="@+id/editPostToolbar"
+      android:id="@+id/editpostToolbar"
       layout="@layout/toolbar"
+      android:text="Edit Post"
+      android:tooltipText="Edit Post"
       />
 
 
@@ -20,8 +22,9 @@
       style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
       android:layout_width="330dp"
       android:layout_height="wrap_content"
+      android:layout_below="@id/editpostToolbar"
 
-      android:layout_below="@+id/editPostToolbar"
+
       android:layout_marginLeft="20dp"
       android:layout_marginTop="40dp">
 
@@ -108,14 +111,15 @@
       android:backgroundTint="#DF3A3A"
       android:fontFamily="sans-serif-black"
       android:onClick="editNoticeAndSendNotification"
-      android:text="Save"
+      android:text="@string/save"
       android:textColor="@color/white"
-      android:textSize="20dp"
+      android:textSize="20sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintVertical_bias="0.616"
-      app:rippleColor="#FFFFFF" />
+      app:rippleColor="#FFFFFF"
+      tools:ignore="UsingOnClickInXml" />
 
 
 </RelativeLayout>

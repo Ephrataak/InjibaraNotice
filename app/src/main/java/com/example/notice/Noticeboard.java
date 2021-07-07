@@ -72,11 +72,8 @@ public class Noticeboard<requestAPI> extends AppCompatActivity {
 
         getPostByID();
 
-
-
-
-
-
+        //The following lines used to get title, message, and date from the values passed from MyFirebaseMessaginService
+        //We should remove it
         String title = getIntent().getStringExtra("title");
         String message = getIntent().getStringExtra("message");
 
@@ -90,6 +87,7 @@ public class Noticeboard<requestAPI> extends AppCompatActivity {
 
         txtPostDate.setText("Posted on: " + dateString);
         txtMessage.setText(message);
+        ////////////////////////////////////////////////////////////////////////////////////
 
     }
 
@@ -115,9 +113,6 @@ public class Noticeboard<requestAPI> extends AppCompatActivity {
                     txtUserType.setText(userType);
                     txtMessage.setText(message);
                     toolbar.setTitle(subject);
-
-
-
 
 
                 } catch (JSONException e) {

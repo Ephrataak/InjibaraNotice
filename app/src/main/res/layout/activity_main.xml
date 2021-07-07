@@ -11,6 +11,8 @@
   <include
       android:id="@+id/addPostToolbar"
       layout="@layout/toolbar"
+      android:text="Add Post"
+      android:tooltipText="Add Post"
       />
 
 
@@ -73,7 +75,7 @@
       android:layout_marginLeft="20dp"
       android:layout_below="@id/text_message_wrapper"
       android:textSize="18sp"
-      android:onClick="Check"/>
+      />
   <CheckBox
       android:id="@+id/staffmemberCheckBox"
       android:layout_width="wrap_content"
@@ -82,7 +84,7 @@
       android:layout_marginLeft="20dp"
       android:layout_below="@id/studentCheckBox"
       android:textSize="18sp"
-      android:onClick="Check"/>
+      />
   <CheckBox
       android:id="@+id/publicCheckbox"
       android:layout_width="wrap_content"
@@ -91,7 +93,7 @@
       android:text="Public"
       android:layout_below="@id/staffmemberCheckBox"
       android:textSize="18sp"
-      android:onClick="Check"/>
+      />
 
   <Button
 

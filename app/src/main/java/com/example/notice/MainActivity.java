@@ -70,10 +70,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /************************************************************************/
         ch = (CheckBox)findViewById(R.id.studentCheckBox);
-        ch1=(CheckBox)findViewById(R.id.staffmemberCheckBox);
-        ch2=(CheckBox)findViewById(R.id.publicCheckbox);
-      //
+        ch1 = (CheckBox)findViewById(R.id.staffmemberCheckBox);
+        ch2 = (CheckBox)findViewById(R.id.publicCheckbox);
+
+        editTextTitle = findViewById(R.id.edit_text_subject);
+        editTextMessage = findViewById(R.id.edit_text_message);
+
         Toolbar toolbar = findViewById(R.id.addPostToolbar);
         toolbar.setTitle(R.string.add_post);
         setSupportActionBar(toolbar);
@@ -86,33 +91,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
             }});
-
+        /**************************************************************************/
 
         requestQueue = Volley.newRequestQueue(this);
 
-
-
         notificationmanager = NotificationManagerCompat.from(this);
-        editTextTitle = findViewById(R.id.edit_text_subject);
-        editTextMessage = findViewById(R.id.edit_text_message);
-
 
     }
 
 
-    public void Check(View v) {
-//        if (ch.isChecked()) {
-//            userType = userType + "Student ";
-//        }
-//
-//        if (ch1.isChecked()){
-//            userType = userType + ",Staff Member";
-//        }
-//        if (ch2.isChecked()){
-//            userType = userType + ",Public";
-//        }
 
-    }
     private void determineUserType(){
         if (ch.isChecked()) {
             userType = userType + "Student";
@@ -143,20 +131,22 @@ public class MainActivity extends AppCompatActivity {
         progress.setMessage("Adding the post...");
         progressDialog  = progress.show();
 
+        //Gets date from the system
         String dateTimeDisplay;
         Calendar calendar;
         SimpleDateFormat dateFormat;
         String date;
-
-        title = editTextTitle.getText().toString();
-        message = editTextMessage.getText().toString();
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        date = dateFormat.format(calendar.getTime());
 
+        //Collects post information from the interface
+        title = editTextTitle.getText().toString();
+        message = editTextMessage.getText().toString();
         determineUserType();
 
 
-        date = dateFormat.format(calendar.getTime());
+
 
 
         StringRequest requestAPI = new StringRequest(Request.Method.POST,create_post
@@ -191,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                         //Log.println(1,"xxx", error.getMessage());
                     }
         })
+        //extra information to the request
         {
             @Override
             public String getBodyContentType() {
@@ -207,88 +198,24 @@ public class MainActivity extends AppCompatActivity {
                 return  hashMap;
             }
         };
+
+
         requestQueue.add(requestAPI);
 
 
-//        //Send notification with firebase
-//        JSONObject mainObj = new JSONObject();
-//        try {
-//            mainObj.put("to", "/topics/InjibaraUniversity");
-//            JSONObject notificationObject = new JSONObject();
-//            notificationObject.put("title", title);
-//            notificationObject.put("body", message);
-//            mainObj.put("notification", notificationObject);
-//            JSONObject obj = new JSONObject();
-//            obj.put("id",id);
-//            mainObj.put("data", obj);
-//            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.getFirebase_Api_Url(),
-//                    mainObj,
-//                    new Response.Listener<JSONObject>() {
-//                        @Override
-//                        public void onResponse(JSONObject response) {
-//
-//                            Toast.makeText(MainActivity.this, "Notification Sent", Toast.LENGTH_SHORT).show();
-//
-//                            progressDialog.dismiss();
-//                            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-//                            alert.setTitle("post added");
-//                            alert.setMessage("The post is added successfully!!");
-//                            alert.setIcon(R.drawable.ic_message);
-//
-//                            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    editTextTitle.setText("");
-//                                    editTextMessage.setText("");
-//                                    ch.setChecked(true);
-//                                    ch1.setChecked(false);
-//                                    ch2.setChecked(false);
-//                                    userType = "";
-//                                    editTextTitle.requestFocus();
-//
-//
-//                                }
-//                            });
-//
-//                            alert.show();
-//
-//                            Log.println(Log.ASSERT,"tag","Success");
-//                        }
-//                        }, new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            //Log.println(1,"xxx", error.getMessage());
-//                        }
-//            }) {
-//                @Override
-//                public Map<String, String> getHeaders() throws AuthFailureError {
-//                    Map<String, String> header = new HashMap<>();
-//                    header.put("Content-Type", "application/json");
-//                    header.put("Authorization", server_key);
-//                    return header;
-//                }
-//
-//            };
-//
-//            requestQueue.add(request);
-//
-//
-//        } catch (JSONException e){
-//            e.printStackTrace();
-//        }
+
 
     }
 
-    private void sendFireBaseNotification()
-    {
+    private void sendFireBaseNotification() {
         //Send notification with firebase
-        JSONObject mainObj = new JSONObject();
+        JSONObject mainObj = new JSONObject(); //creates a new JSON object called mainObj..{}
         try {
             mainObj.put("to", "/topics/InjibaraUniversity");
-            JSONObject notificationObject = new JSONObject();
+            JSONObject notificationObject = new JSONObject(); //creates a new JSON object called notificationObject..{}
             notificationObject.put("title", title);
             notificationObject.put("body", message);
-            mainObj.put("notification", notificationObject);
+            mainObj.put("notification", notificationObject);//embed notificationObject to mainObj
             JSONObject obj = new JSONObject();
             obj.put("id",id);
             mainObj.put("data", obj);
@@ -311,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     editTextTitle.setText("");
                                     editTextMessage.setText("");
-                                    ch.setChecked(true);
+                                    ch.setChecked(true); //set Student checkbox checked by default
                                     ch1.setChecked(false);
                                     ch2.setChecked(false);
                                     userType = "";
@@ -330,7 +257,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     //Log.println(1,"xxx", error.getMessage());
                 }
-            }) {
+            })
+            //extra information
+            {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> header = new HashMap<>();
@@ -340,7 +269,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             };
+
             requestQueue.add(request);
+
         } catch (JSONException e){
             e.printStackTrace();
         }

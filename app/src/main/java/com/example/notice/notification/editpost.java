@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -37,6 +38,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.notice.Constants.get_post_by_id;
 import static com.example.notice.Constants.server_key;
 import static com.example.notice.Constants.update_post;
 
@@ -51,6 +53,7 @@ public class editpost extends AppCompatActivity {
         public dialog_reset dialogReset;
         public EditText editTextTitle;
         public EditText editTextMessage;
+
         private RequestQueue requestQueue;
 
         public String subject;
@@ -60,6 +63,7 @@ public class editpost extends AppCompatActivity {
         private String message;
 
         private String id;
+        private String date;
 
         private AlertDialog progressDialog;
 
@@ -67,12 +71,16 @@ public class editpost extends AppCompatActivity {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_editpost);
+
+            //getting the id that is passed to the activity from the recycler view
+            id = getIntent().getStringExtra("id");
+
             ch = (CheckBox)findViewById(R.id.studentCheckBox);
             ch1=(CheckBox)findViewById(R.id.staffmemberCheckBox);
             ch2=(CheckBox)findViewById(R.id.publicCheckbox);
             //
-            Toolbar toolbar = findViewById(R.id.editPostToolbar);
-            toolbar.setTitle(R.string.add_post);
+            Toolbar toolbar = findViewById(R.id.editpostToolbar);
+            toolbar.setTitle(R.string.edit_post);
             setSupportActionBar(toolbar);
             toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_icon);
             toolbar.setNavigationOnClickListener(new View.OnClickListener(){
@@ -85,6 +93,7 @@ public class editpost extends AppCompatActivity {
                 }});
 
 
+
             requestQueue = Volley.newRequestQueue(this);
 
 
@@ -92,6 +101,86 @@ public class editpost extends AppCompatActivity {
             notificationmanager = NotificationManagerCompat.from(this);
             editTextTitle = findViewById(R.id.edit_text_subject);
             editTextMessage = findViewById(R.id.edit_text_message);
+
+
+            //getting posts to be edited
+            StringRequest requestAPIGETBYID = new StringRequest(Request.Method.GET,get_post_by_id+ "&id=" + id
+                    ,new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    Toast.makeText(editpost.this, "getting post from DB", Toast.LENGTH_SHORT).show();
+                    JSONObject obj;
+                    //Toast.makeText(MainActivity.this, "Post added successfully to DB", Toast.LENGTH_SHORT).show();
+
+                    try {
+                        obj = new JSONObject(response);
+
+
+
+                        JSONObject post = obj.getJSONObject("post");
+                        String subject = post.getString("subject");
+                        String message = post.getString("message");
+                        String date = post.getString("date");
+                        String userType = post.getString("userType");
+                        String id = post.getString("id");
+
+
+                        editTextTitle.setText(subject);
+                        editTextMessage.setText(message);
+                        //toolbar.setTitle(subject);
+                        if (userType.contains("Student"))
+                            ch.setChecked(true);
+
+
+                        if (userType.contains("Staff Member"))
+                            ch1.setChecked(true);
+
+
+                        if (userType.contains("Public") )
+                            ch2.setChecked(true);
+
+
+
+
+
+
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Log.println(Log.ASSERT,"tag","Success");
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(editpost.this, "Error adding to DB", Toast.LENGTH_SHORT).show();
+
+                    //Log.println(1,"xxx", error.getMessage());
+                }
+            })
+            {
+                @Override
+                public String getBodyContentType() {
+                    return "application/x-www-form-urlencoded; charset=UTF-8";
+                }
+
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String,String> hashMap=new HashMap<String, String>();
+                    hashMap.put("subject",title);
+                    hashMap.put("message",message);
+                    hashMap.put("date",date);
+                    hashMap.put("userType", userType);
+                    return  hashMap;
+                }
+            };
+            requestQueue.add(requestAPIGETBYID);
+
+
+
+
 
 
         }
@@ -156,6 +245,16 @@ public class editpost extends AppCompatActivity {
             date = dateFormat.format(calendar.getTime());
 
 
+
+
+
+
+
+
+
+
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////
             StringRequest requestAPI = new StringRequest(Request.Method.POST,update_post
                     ,new Response.Listener<String>() {
                 @Override
@@ -204,6 +303,7 @@ public class editpost extends AppCompatActivity {
                     return  hashMap;
                 }
             };
+
             requestQueue.add(requestAPI);
 
 

@@ -80,22 +80,12 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
 
         //creates a new request queue
         requestQueue = Volley.newRequestQueue(this);
+        ///////////////////////////////////////////////////////////////
 
+
+/* Initialize interface elements*****************************************/
         toolbar = findViewById(R.id.homeToolbar);
         toolbar.setTitle(R.string.home);
-
-        fab = findViewById(R.id.floating_btn);
-        fab.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        final Intent intent = new Intent(v.getContext(), MainActivity.class);
-                        //getParent().finish();
-                        startActivity(intent);
-
-                    }
-                });
-
-
 
         /////////////////////////////////////////////////////////////////////
         //initialize the recyclerview
@@ -107,18 +97,34 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
         mRecyclerView.setAdapter(mAdapter);
         ///////////////////////////////////////////////////////////
 
-        //gets posts and displays from the database
+        fab = findViewById(R.id.floating_btn);
+        fab.setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        final Intent intent = new Intent(v.getContext(), MainActivity.class); //MainActivity=add post
+                        //getParent().finish();
+                        startActivity(intent);
+
+                    }
+                });
+/***********************************************************************************************/
+
+
+
+
+
+        //gets posts from the database and display them
         getPosts();
 
     }
 
     //used to add menu on the tool bar
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
+  //  @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.main_menu, menu);
+//        return true;
+//    }
 
 
     private void getPosts() {
@@ -128,10 +134,10 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
                 @Override
                 public void onResponse(String response) {
                     JSONObject obj;
-                    //Toast.makeText(MainActivity.this, "Post added successfully to DB", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this,const "post return successful", Toast.LENGTH_SHORT).show();
 
                     try {
-                        obj = new JSONObject(response);
+                        obj = new JSONObject(response);//converts string response to Json format
 
                         JSONArray posts = obj.getJSONArray("post");
                         for (int i = 0; i < posts.length(); i++) {
@@ -143,7 +149,7 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
                             String id = post.getString("id");
                             list.add(new Item(subject, userType, date, id));
                         }
-                        mAdapter.notifyDataSetChanged();
+                        mAdapter.notifyDataSetChanged(); //informs the adapter data is loaded to 'list' var
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -154,16 +160,20 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    // Toast.makeText(MainActivity.this, "Error adding to DB", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Homescreen.this, "Error loading posts", Toast.LENGTH_SHORT).show();
                     Log.println(1, "xxx", error.toString());
                 }
-            }) {
+            })//The construction of the request is not yet finished. The following lines attach extra information about
+                //the request such as content type
+            {
                 @Override
                 public String getBodyContentType() {
                     return "application/x-www-form-urlencoded; charset=UTF-8";
                 }
 
-            };
+            }; //finish the construction of the request string (designated by the variable requestAPI)
+
+            //We send the request API to volley by the following line
             requestQueue.add(requestAPI);
 
         } catch (Exception e) {
