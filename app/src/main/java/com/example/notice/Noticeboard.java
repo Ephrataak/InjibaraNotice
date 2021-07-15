@@ -3,6 +3,7 @@ package com.example.notice;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -44,6 +45,10 @@ public class Noticeboard<requestAPI> extends AppCompatActivity {
 
     private String id;
 
+    private String from;
+
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,13 +56,19 @@ public class Noticeboard<requestAPI> extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
+        from = getIntent().getStringExtra("from");
+
         toolbar = findViewById(R.id.noticeToolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_icon);
         toolbar.setNavigationOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v) {
-                final Intent intent = new Intent(v.getContext(),Homescreen.class);
+                final Intent intent;
+                if (from.equals("admin"))
+                    intent = new Intent(v.getContext(),Homescreen.class);
+                else
+                    intent = new Intent(v.getContext(),Home_user.class);
                 //getParent().finish();
                 startActivity(intent);
 
@@ -69,6 +80,11 @@ public class Noticeboard<requestAPI> extends AppCompatActivity {
         txtMessage = findViewById(R.id.txtmsg);
 
         id = getIntent().getStringExtra("id");
+
+        //gets posts and displays from the database
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading the notice...");
+        progressDialog.show();
 
         getPostByID();
 
@@ -114,6 +130,8 @@ public class Noticeboard<requestAPI> extends AppCompatActivity {
                     txtMessage.setText(message);
                     toolbar.setTitle(subject);
 
+                    progressDialog.dismiss();
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -130,6 +148,7 @@ public class Noticeboard<requestAPI> extends AppCompatActivity {
                 // Toast.makeText(MainActivity.this, "Error adding to DB", Toast.LENGTH_SHORT).show();
 
                 Log.println(1, "xxx", error.getMessage());
+                progressDialog.dismiss();
             }
         }) {
             @Override

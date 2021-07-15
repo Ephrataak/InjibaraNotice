@@ -13,43 +13,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Notice" >
-        <activity
-            android:name=".NavDrawerActivity2"
-            android:label="@string/title_activity_nav_drawer2"
-            android:theme="@style/Theme.Notice.NoActionBar" >
-        </activity>
-        <activity
-            android:name=".NavDrawerActivity"
-            android:label="@string/title_activity_nav_drawer"
-            android:theme="@style/Theme.Notice.NoActionBar" >
-        </activity>
-        <activity
-            android:name=".ui.nav_drawer"
-            android:label="@string/title_activity_nav_drawer"
-            android:theme="@style/Theme.Notice.NoActionBar" >
-        </activity>
+
+
+
         <activity android:name=".login" >
         </activity>
         <activity android:name=".addpost" />
         <activity android:name=".notification.editpost" />
         <activity android:name=".Homescreen" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Noticeboard"
             android:excludeFromRecents="true"
             android:taskAffinity="" />
-        <activity android:name=".Home_user" />
+        <activity android:name=".Home_user"
+            android:theme="@style/Theme.Notice.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>/>
+
+        </activity>
+
         <activity android:name=".MainActivity" >
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+
         </activity>
 
         <service

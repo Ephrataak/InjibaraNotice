@@ -41,6 +41,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notifyIntent.putExtra("message",remoteMessage.getNotification().getBody());
         notifyIntent.putExtra("time", remoteMessage.getSentTime());
         notifyIntent.putExtra("id",remoteMessage.getData().get("id"));
+        notifyIntent.putExtra("from", "user");
         // Create the PendingIntent
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(
                 this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT

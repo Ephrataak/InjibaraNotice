@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,7 +65,11 @@ public class MainActivity extends AppCompatActivity {
 
     private String id;
 
-    private AlertDialog progressDialog;
+    private String from;
+
+    private ProgressDialog progressDialog;
+
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         editTextTitle = findViewById(R.id.edit_text_subject);
         editTextMessage = findViewById(R.id.edit_text_message);
 
+        from = getIntent().getStringExtra("from");
+
         Toolbar toolbar = findViewById(R.id.addPostToolbar);
         toolbar.setTitle(R.string.add_post);
         setSupportActionBar(toolbar);
@@ -86,7 +93,11 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v) {
-                final Intent intent = new Intent(v.getContext(),Homescreen.class);
+                final Intent intent;
+                if (from.equals("admin"))
+                    intent = new Intent(v.getContext(),Homescreen.class);
+                else
+                    intent = new Intent(v.getContext(),Home_user.class);
                 //getParent().finish();
                 startActivity(intent);
 
@@ -127,9 +138,12 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void saveNoticeAndSendNotification(View v) throws JSONException {
 
-        AlertDialog.Builder progress = new AlertDialog.Builder(MainActivity.this);
-        progress.setMessage("Adding the post...");
-        progressDialog  = progress.show();
+//        AlertDialog.Builder progress = new AlertDialog.Builder(MainActivity.this);
+//        progress.setMessage("Adding the post...");
+//        progressDialog  = progress.show();
+        progressDialog = new ProgressDialog(v.getContext());
+        progressDialog.setMessage("please wait...");
+        progressDialog.show();
 
         //Gets date from the system
         String dateTimeDisplay;
@@ -176,7 +190,9 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
                         Toast.makeText(MainActivity.this, "Error adding to DB", Toast.LENGTH_SHORT).show();
+
 
                         //Log.println(1,"xxx", error.getMessage());
                     }
@@ -255,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    progressDialog.dismiss();
                     //Log.println(1,"xxx", error.getMessage());
                 }
             })

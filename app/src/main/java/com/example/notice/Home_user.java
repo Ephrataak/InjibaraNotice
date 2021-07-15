@@ -1,11 +1,18 @@
 package com.example.notice;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +33,7 @@ import com.example.notice.notification.Item;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
@@ -37,25 +45,7 @@ import java.util.ArrayList;
 
 import static com.example.notice.Constants.get_post;
 
-public class Home_user extends AppCompatActivity implements user_adapter.OnItemClickListener {
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-
-        return super.onOptionsItemSelected(item);
-    }
+public class Home_user extends AppCompatActivity implements user_adapter.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     Toolbar toolbar;
     public Menu menu;
@@ -67,11 +57,52 @@ public class Home_user extends AppCompatActivity implements user_adapter.OnItemC
     private user_adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private ProgressDialog progressDialog;
+
     ArrayList<Item> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_user);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+        //creates a new request queue
+        requestQueue = Volley.newRequestQueue(this);
+
+        toolbar = findViewById(R.id.home_userToolbar);
+        toolbar.setTitle(R.string.home);
+
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setCheckedItem(R.id.nav_home);
+
+
+
+        /////////////////////////////////////////////////////////////////////
+        //initialize the recyclerview
+        mRecyclerView = findViewById(R.id.user_recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new user_adapter(list,this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+        ///////////////////////////////////////////////////////////
+
+        //gets posts and displays from the database
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading notices...");
+        progressDialog.show();
+
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //The following code fragment makes the user to subscribe to InjibaraUniversity topic in firebase so that
@@ -90,36 +121,16 @@ public class Home_user extends AppCompatActivity implements user_adapter.OnItemC
                 });
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //creates a new request queue
-        requestQueue = Volley.newRequestQueue(this);
-
-        toolbar = findViewById(R.id.home_userToolbar);
-        toolbar.setTitle(R.string.home);
-
-
-
-        /////////////////////////////////////////////////////////////////////
-        //initialize the recyclerview
-        mRecyclerView = findViewById(R.id.user_recyclerView);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new user_adapter(list,this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
-        ///////////////////////////////////////////////////////////
-
-        //gets posts and displays from the database
+        //The following call is to get the notices and load them
         getPosts();
+
+        if (getIntent().getStringExtra("from") != null && getIntent().getStringExtra("from").equals("logout")){
+            Toast.makeText(Home_user.this, "logged out", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
-    //used to add menu on the tool bar
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.main_menu, menu);
-//        return true;
-//    }
+
 
 
     private void getPosts() {
@@ -144,7 +155,8 @@ public class Home_user extends AppCompatActivity implements user_adapter.OnItemC
                             String id = post.getString("id");
                             list.add(new Item(subject, userType, date, id));
                         }
-                        mAdapter.notifyDataSetChanged();
+                        mAdapter.notifyDataSetChanged(); //to refersh the recyclerview with the new list
+                        progressDialog.dismiss();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -180,8 +192,22 @@ public class Home_user extends AppCompatActivity implements user_adapter.OnItemC
     public void onItemClick(int position) {
         final Intent intent = new Intent(this, Noticeboard.class);  //create the instance of the activity that we want to open
         intent.putExtra("id",list.get(position).getText4()); //attach the data that we want to pass to the activity (id)
+        intent.putExtra("from", "user");
         startActivity(intent);//open the activity
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+        switch (id){
+            case R.id.nav_admin_login:
+                this.closeContextMenu();
+                final Intent intent = new Intent(this, login.class);
+                startActivity(intent);
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
+    }
 }

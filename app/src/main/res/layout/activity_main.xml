@@ -35,7 +35,7 @@
         android:fontFamily="sans-serif-condensed-medium"
         android:hint="Subject"
         android:inputType="text"
-        android:maxLength="15"
+        android:maxLength="30"
         android:textSize="24sp" />
 
   </com.google.android.material.textfield.TextInputLayout>

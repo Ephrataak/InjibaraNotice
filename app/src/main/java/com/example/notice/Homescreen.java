@@ -1,9 +1,11 @@
 package com.example.notice;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +34,7 @@ import com.example.notice.notification.editpost;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
@@ -47,7 +50,7 @@ import static com.example.notice.Constants.delete_post;
 import static com.example.notice.Constants.get_post;
 import static com.example.notice.Constants.update_post;
 
-public class Homescreen extends AppCompatActivity implements Adapter.OnItemClickListener {
+public class Homescreen extends AppCompatActivity implements Adapter.OnItemClickListener,NavigationView.OnNavigationItemSelectedListener {
 
     private RequestQueue requestQueue;
 
@@ -78,6 +81,10 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
 
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //The following code fragment makes the user to subscribe to InjibaraUniversity topic in firebase so that
         //the user receives notification
@@ -104,6 +111,14 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
         toolbar = findViewById(R.id.homeToolbar);
         toolbar.setTitle(R.string.home);
 
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setCheckedItem(R.id.nav_home);
+
         /////////////////////////////////////////////////////////////////////
         //initialize the recyclerview
         mRecyclerView = findViewById(R.id.recyclerView);
@@ -119,6 +134,7 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         final Intent intent = new Intent(v.getContext(), MainActivity.class); //MainActivity=add post
+                        intent.putExtra("from", "admin");
                         //getParent().finish();
                         startActivity(intent);
 
@@ -206,6 +222,7 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
     public void onItemClick(int position) {
         final Intent intent = new Intent(this, Noticeboard.class);  //create the instance of the activity that we want to open
         intent.putExtra("id",list.get(position).getText4()); //attach the data that we want to pass to the activity (id)
+        intent.putExtra("from", "admin");
         startActivity(intent);//open the activity
     }
 
@@ -259,7 +276,7 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(Homescreen.this, "Error deleting on the to DB", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Homescreen.this, "Error deleting on the DB", Toast.LENGTH_SHORT).show();
 
                                 //Log.println(1,"xxx", error.getMessage());
                             }
@@ -288,4 +305,18 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.nav_admin_logout:
+                this.closeContextMenu();
+                final Intent intent = new Intent(this, Home_user.class);
+                intent.putExtra("from", "logout");
+                startActivity(intent);
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
+
+    }
 }

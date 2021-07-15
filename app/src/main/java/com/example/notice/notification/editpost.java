@@ -1,5 +1,6 @@
 package com.example.notice.notification;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
@@ -103,6 +104,8 @@ public class editpost extends AppCompatActivity {
             editTextMessage = findViewById(R.id.edit_text_message);
 
 
+
+
             //getting posts to be edited
             StringRequest requestAPIGETBYID = new StringRequest(Request.Method.GET,get_post_by_id+ "&id=" + id
                     ,new Response.Listener<String>() {
@@ -141,12 +144,6 @@ public class editpost extends AppCompatActivity {
                             ch2.setChecked(true);
 
 
-
-
-
-
-
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -155,7 +152,8 @@ public class editpost extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(editpost.this, "Error getting posts from DB", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    Toast.makeText(editpost.this, "Error in editing the post in DB", Toast.LENGTH_SHORT).show();
 
                     //Log.println(1,"xxx", error.getMessage());
                 }
@@ -177,28 +175,10 @@ public class editpost extends AppCompatActivity {
                 }
             };
             requestQueue.add(requestAPIGETBYID);
-
-
-
-
-
-
         }
 
 
-        public void Check(View v) {
-//        if (ch.isChecked()) {
-//            userType = userType + "Student ";
-//        }
-//
-//        if (ch1.isChecked()){
-//            userType = userType + ",Staff Member";
-//        }
-//        if (ch2.isChecked()){
-//            userType = userType + ",Public";
-//        }
 
-        }
         private void determineUserType(){
             if (ch.isChecked()) {
                 userType = userType + "Student";
@@ -243,16 +223,6 @@ public class editpost extends AppCompatActivity {
 
 
             date = dateFormat.format(calendar.getTime());
-
-
-
-
-
-
-
-
-
-
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
             StringRequest requestAPI = new StringRequest(Request.Method.POST,update_post + "&id=" + id

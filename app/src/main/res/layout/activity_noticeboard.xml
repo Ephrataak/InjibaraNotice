@@ -28,6 +28,7 @@
 
         android:fontFamily="@font/roboto_condensed_light"
         android:textAlignment="viewStart"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="normal" />
     <ImageView
@@ -45,10 +46,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/post_time"
-        android:layout_toRightOf="@+id/notification"
         android:layout_marginLeft="10dp"
-        android:fontFamily="@font/roboto_bold"
+        android:layout_toRightOf="@+id/notification"
+        android:fontFamily="sans-serif-condensed-medium"
 
+        android:textColor="@color/black"
         android:textSize="24sp">
 
     </TextView>
@@ -86,15 +88,11 @@
         android:layout_below="@+id/lineSeparator"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="25dp"
-        android:layout_marginEnd="34dp"
-
+        android:layout_marginEnd="20dp"
         android:background="@color/white"
-        android:backgroundTint="@color/white"
+        android:fontFamily="sans-serif-condensed-medium"
+
         android:justificationMode="inter_word"
-
-        android:fontFamily="@font/roboto"
-
-
         android:padding="5dp"
         android:paddingStart="5dp"
         android:paddingLeft="10dp"
@@ -102,5 +100,7 @@
         android:paddingEnd="5dp"
         android:paddingRight="5dp"
         android:paddingBottom="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="#00000000"
         android:textSize="20sp" />
 </RelativeLayout>
