@@ -21,6 +21,7 @@ public class dialog_delete extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+
                     }
                 })
                 .setPositiveButton("No", new DialogInterface.OnClickListener() {

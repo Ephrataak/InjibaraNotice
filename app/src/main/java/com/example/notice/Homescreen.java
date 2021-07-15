@@ -1,11 +1,13 @@
 package com.example.notice;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -37,18 +40,32 @@ import org.json.JSONObject;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.example.notice.Constants.delete_post;
 import static com.example.notice.Constants.get_post;
+import static com.example.notice.Constants.update_post;
 
 public class Homescreen extends AppCompatActivity implements Adapter.OnItemClickListener {
 
+    private RequestQueue requestQueue;
 
+    public String subject;
+    String userType = "";
+    public String msg;
+
+    private String title;
+    private String message;
+
+    private String id;
+    private String date;
 
 
     Toolbar toolbar;
     public Menu menu;
     FloatingActionButton fab;
-    private RequestQueue requestQueue;
+
 
 
     private RecyclerView mRecyclerView;
@@ -197,6 +214,77 @@ public class Homescreen extends AppCompatActivity implements Adapter.OnItemClick
         final Intent intent = new Intent(this, editpost.class);  //create the instance of the activity that we want to open
         intent.putExtra("id",list.get(position).getText4()); //attach the data that we want to pass to the activity (id)
         startActivity(intent);//open the activity
+    }
+
+    @Override
+    public void onDeleteButtonClick(int position) {
+        //TODO 1. Display dialog box, 2. If yes is clicked, call deleteApi, 3. If successfully deleted, display message 4.Refresh home screen
+        AlertDialog.Builder builder = new AlertDialog.Builder(Homescreen.this);
+        builder.setTitle("DELETE NOTICE?")
+                .setMessage("Are you sure you want to delete this notice?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StringRequest requestAPI = new StringRequest(Request.Method.POST,delete_post + "&id=" + list.get(position).getText4()
+                                ,new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+
+                                JSONObject obj;
+                                Toast.makeText(Homescreen.this, "Post is removed successfully from DB", Toast.LENGTH_SHORT).show();
+
+                                try {
+                                    obj = new JSONObject(response);//converts string response to Json format
+                                    list.clear();
+
+                                    JSONArray posts = obj.getJSONArray("post");
+                                    for (int i = 0; i < posts.length(); i++) {
+                                        JSONObject post = posts.getJSONObject(i);
+                                        String subject = post.getString("subject");
+                                        //String message = post.getString("message");
+                                        String date = post.getString("date");
+                                        String userType = post.getString("userType");
+                                        String id = post.getString("id");
+                                        list.add(new Item(subject, userType, date, id));
+                                    }
+                                    mAdapter.notifyDataSetChanged(); //informs the adapter data is loaded to 'list' var
+
+
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.println(Log.ASSERT,"tag","Success");
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(Homescreen.this, "Error deleting on the to DB", Toast.LENGTH_SHORT).show();
+
+                                //Log.println(1,"xxx", error.getMessage());
+                            }
+                        })
+                        {
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/x-www-form-urlencoded; charset=UTF-8";
+                            }
+
+
+                        };
+
+                        requestQueue.add(requestAPI);
+
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.show();
     }
 
 

@@ -21,7 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.notice.notification.Adapter;
+import com.example.notice.notification.user_adapter;
 import com.example.notice.notification.Item;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 
 import static com.example.notice.Constants.get_post;
 
-public class Home_user extends AppCompatActivity implements Adapter.OnItemClickListener {
+public class Home_user extends AppCompatActivity implements user_adapter.OnItemClickListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -64,14 +64,14 @@ public class Home_user extends AppCompatActivity implements Adapter.OnItemClickL
 
 
     private RecyclerView mRecyclerView;
-    private Adapter mAdapter;
+    private user_adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     ArrayList<Item> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homescreen);
+        setContentView(R.layout.activity_home_user);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //The following code fragment makes the user to subscribe to InjibaraUniversity topic in firebase so that
@@ -93,26 +93,17 @@ public class Home_user extends AppCompatActivity implements Adapter.OnItemClickL
         //creates a new request queue
         requestQueue = Volley.newRequestQueue(this);
 
-        toolbar = findViewById(R.id.homeToolbar);
+        toolbar = findViewById(R.id.home_userToolbar);
         toolbar.setTitle(R.string.home);
 
-        fab = findViewById(R.id.floating_btn);
-        fab.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        final Intent intent = new Intent(v.getContext(), MainActivity.class);
-                        //getParent().finish();
-                        startActivity(intent);
 
-                    }
-                });
 
         /////////////////////////////////////////////////////////////////////
         //initialize the recyclerview
-        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView = findViewById(R.id.user_recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new Adapter(list,this);
+        mAdapter = new user_adapter(list,this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         ///////////////////////////////////////////////////////////
@@ -192,8 +183,5 @@ public class Home_user extends AppCompatActivity implements Adapter.OnItemClickL
         startActivity(intent);//open the activity
     }
 
-    @Override
-    public void onEditButtonClick(int position) {
 
-    }
 }

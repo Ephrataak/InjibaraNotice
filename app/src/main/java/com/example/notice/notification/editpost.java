@@ -155,7 +155,7 @@ public class editpost extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(editpost.this, "Error adding to DB", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(editpost.this, "Error getting posts from DB", Toast.LENGTH_SHORT).show();
 
                     //Log.println(1,"xxx", error.getMessage());
                 }
@@ -226,7 +226,7 @@ public class editpost extends AppCompatActivity {
         public void editNoticeAndSendNotification(View v) throws JSONException {
 
             AlertDialog.Builder progress = new AlertDialog.Builder(this);
-            progress.setMessage("Adding the post...");
+            progress.setMessage("Editing the post...");
             progressDialog  = progress.show();
 
             String dateTimeDisplay;
@@ -255,12 +255,12 @@ public class editpost extends AppCompatActivity {
 
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
-            StringRequest requestAPI = new StringRequest(Request.Method.POST,update_post
+            StringRequest requestAPI = new StringRequest(Request.Method.POST,update_post + "&id=" + id
                     ,new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
-                    Toast.makeText(editpost.this, "Post added successfully to DB", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(editpost.this, "Post edited successfully on the DB", Toast.LENGTH_SHORT).show();
                     JSONObject obj;
                     //Toast.makeText(MainActivity.this, "Post added successfully to DB", Toast.LENGTH_SHORT).show();
 
@@ -282,7 +282,7 @@ public class editpost extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(editpost.this, "Error adding to DB", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(editpost.this, "Error editing on the to DB", Toast.LENGTH_SHORT).show();
 
                     //Log.println(1,"xxx", error.getMessage());
                 }
@@ -311,7 +311,7 @@ public class editpost extends AppCompatActivity {
 
         }
 
-        private void sendFireBaseNotification()
+       private void sendFireBaseNotification()
         {
             //Send notification with firebase
             JSONObject mainObj = new JSONObject();
@@ -324,6 +324,8 @@ public class editpost extends AppCompatActivity {
                 JSONObject obj = new JSONObject();
                 obj.put("id",id);
                 mainObj.put("data", obj);
+                final Intent i = new Intent(this, Homescreen.class);
+
                 JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.getFirebase_Api_Url(),
                         mainObj,
                         new Response.Listener<JSONObject>() {
@@ -334,21 +336,16 @@ public class editpost extends AppCompatActivity {
 
                                 progressDialog.dismiss();
                                AlertDialog.Builder alert = new AlertDialog.Builder(editpost.this);
-                                alert.setTitle("post added");
+                                alert.setTitle("post edited");
                                 alert.setMessage("The post is edited successfully!!");
                                 alert.setIcon(R.drawable.ic_message);
+
 
                                 alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        editTextTitle.setText("");
-                                        editTextMessage.setText("");
-                                        ch.setChecked(true);
-                                        ch1.setChecked(false);
-                                        ch2.setChecked(false);
-                                        userType = "";
-                                        editTextTitle.requestFocus();
 
+                                        startActivity(i);
 
                                     }
                                 });

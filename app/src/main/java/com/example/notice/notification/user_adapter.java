@@ -1,32 +1,25 @@
 package com.example.notice.notification;
 
-import android.content.Intent;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.notice.MainActivity;
 import com.example.notice.R;
 
 import java.util.ArrayList;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ExampleViewHolder> {
+public class user_adapter extends RecyclerView.Adapter<user_adapter.ExampleViewHolder> {
     private ArrayList<Item> List;
     private OnItemClickListener mListener;
     public interface OnItemClickListener {
         void onItemClick(int position);
-        void onEditButtonClick(int position);
-        void onDeleteButtonClick(int position);
 
     }
-    public Adapter(ArrayList<Item> exampleList, OnItemClickListener onItemClickListener) {
+    public user_adapter(ArrayList<Item> exampleList, OnItemClickListener onItemClickListener) {
         List = exampleList;
         this.mListener = onItemClickListener;
     }
@@ -40,7 +33,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ExampleViewHolder> {
         public TextView mTextView3;
         public TextView mTextView4;
         public ImageButton editButton;
-        public ImageButton deleteButton;
         OnItemClickListener onItemClickListener;
 
         public ExampleViewHolder(View itemView, final OnItemClickListener listener) {
@@ -50,23 +42,15 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ExampleViewHolder> {
             mTextView2 = itemView.findViewById(R.id.message);
             mTextView3 = itemView.findViewById(R.id.date);
             mTextView4 = itemView.findViewById(R.id.postId);
-            editButton = itemView.findViewById(R.id.edit_btn);
-            deleteButton = itemView.findViewById(R.id.delete_btn);
+
             this.onItemClickListener = listener;
             itemView.setOnClickListener(this);
-            editButton.setOnClickListener(this);
-            deleteButton.setOnClickListener(this);
+
         }
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.edit_btn)
-                onItemClickListener.onEditButtonClick(getAdapterPosition());
-            else if (v.getId() == R.id.delete_btn){
-                onItemClickListener.onDeleteButtonClick(getAdapterPosition());
-            }
-            else
-                onItemClickListener.onItemClick(getAdapterPosition());
+            onItemClickListener.onItemClick(getAdapterPosition());
 
         }
     }
@@ -74,7 +58,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ExampleViewHolder> {
 
     @Override
     public ExampleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.items, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_items, parent, false);
         ExampleViewHolder evh = new ExampleViewHolder(v, mListener);
         return evh;
     }
